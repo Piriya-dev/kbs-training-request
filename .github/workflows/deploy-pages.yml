@@ -28,6 +28,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: Prepare assets for GitHub Pages project path
+        run: |
+          REPOSITORY_NAME="${GITHUB_REPOSITORY#*/}"
+          mv "dist/client/${REPOSITORY_NAME}/_next" "dist/client/_next"
+          rmdir "dist/client/${REPOSITORY_NAME}"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
