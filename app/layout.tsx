@@ -2,10 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'KBS Order | KBS Sugar',
-  description: 'ระบบจัดทำคำสั่งขายและบันทึกเอกสาร PDF สำหรับ KBS Sugar',
-  manifest: '/manifest.webmanifest',
-  themeColor: '#0799d0',
+  title: 'แบบคำร้องขอฝึกอบรม | KBS Sugar',
+  description: 'แบบคำร้องขอฝึกอบรม สัมมนา และดูงาน สำหรับพนักงาน KBS Sugar',
+  themeColor: '#087ab9',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
