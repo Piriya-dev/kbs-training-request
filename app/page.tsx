@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, PointerEvent, useMemo, useRef, useState } from 'react';
 
 const reasons = ['สอดคล้องกฎหมาย', 'ตามมาตรฐาน/ลูกค้า', 'นำมาใช้ในการทำงาน', 'ศึกษาเรียนรู้นำมาปรับปรุง', 'เพิ่มทักษะเรียนรู้สิ่งใหม่', 'ได้รับมอบหมายให้ดำเนินการ'];
 
@@ -26,13 +26,50 @@ export default function Home() {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [fileName, setFileName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const signatureCanvas = useRef<HTMLCanvasElement>(null);
+  const drawingSignature = useRef(false);
   const autoReportDate = useMemo(() => addDays(endDate, 15), [endDate]);
 
   function updateEndDate(value: string) { setEndDate(value); setReportDate(addDays(value, 15)); }
   function toggleReason(reason: string) { setSelectedReasons((current) => current.includes(reason) ? current.filter((item) => item !== reason) : [...current, reason]); }
+  function signaturePoint(event: PointerEvent<HTMLCanvasElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) * (event.currentTarget.width / rect.width),
+      y: (event.clientY - rect.top) * (event.currentTarget.height / rect.height),
+    };
+  }
+  function startSignature(event: PointerEvent<HTMLCanvasElement>) {
+    drawingSignature.current = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const context = event.currentTarget.getContext('2d');
+    const point = signaturePoint(event);
+    if (context) {
+      context.beginPath();
+      context.moveTo(point.x, point.y);
+      context.lineWidth = 3;
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+      context.strokeStyle = '#152944';
+    }
+  }
+  function drawSignature(event: PointerEvent<HTMLCanvasElement>) {
+    if (!drawingSignature.current) return;
+    const context = event.currentTarget.getContext('2d');
+    const point = signaturePoint(event);
+    if (context) { context.lineTo(point.x, point.y); context.stroke(); setHasSignature(true); }
+  }
+  function stopSignature() { drawingSignature.current = false; }
+  function clearSignature() {
+    const canvas = signatureCanvas.current;
+    canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
+  }
   function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selectedReasons.length) { document.querySelector('#reasons')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    if (!hasSignature) { document.querySelector('#signature')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     setSubmitted(true);
   }
 
@@ -88,6 +125,16 @@ export default function Home() {
           <section>
             <SectionTitle number="04">เอกสารประกอบ</SectionTitle>
             <label className="upload-zone"><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onChange={(event) => setFileName(event.target.files?.[0]?.name || '')} required /><span className="upload-icon">↥</span><strong>{fileName || 'เลือกหรือวางไฟล์เอกสารที่นี่'}</strong><small>PDF, Word หรือรูปภาพ · ขนาดไม่เกิน 10 MB</small><em>{fileName ? 'เปลี่ยนไฟล์' : 'เลือกไฟล์'}</em></label>
+          </section>
+
+          <section id="signature">
+            <SectionTitle number="05">ลายเซ็นผู้ร้องขอ</SectionTitle>
+            <div className={`signature-panel ${hasSignature ? 'signed' : ''}`}>
+              <div className="signature-toolbar"><div><strong>ลงลายเซ็นในช่องด้านล่าง <b>*</b></strong><small>ใช้เมาส์ ปากกา หรือนิ้วมือในการเซ็น</small></div><button type="button" onClick={clearSignature}>ล้างลายเซ็น</button></div>
+              <canvas ref={signatureCanvas} width="1400" height="300" aria-label="ช่องลงลายเซ็นผู้ร้องขอ" onPointerDown={startSignature} onPointerMove={drawSignature} onPointerUp={stopSignature} onPointerCancel={stopSignature} onPointerLeave={stopSignature} />
+              <div className="signature-line"><span>ลายเซ็นผู้ร้องขอ</span></div>
+            </div>
+            {!hasSignature && <p className="signature-required">กรุณาลงลายเซ็นก่อนส่งคำร้อง</p>}
           </section>
 
           <button className="submit-button" type="submit"><span>✓</span> ยืนยันส่งคำร้อง</button>
