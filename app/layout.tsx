@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: 'แบบคำร้องขอฝึกอบรม | KBS Sugar',
   description: 'แบบคำร้องขอฝึกอบรม สัมมนา และดูงาน สำหรับพนักงาน KBS Sugar',
   themeColor: '#087ab9',
+  icons: {
+    icon: [{ url: 'kbs-favicon.png', type: 'image/png', sizes: '256x256' }],
+    shortcut: 'kbs-favicon.png',
+    apple: [{ url: 'kbs-favicon.png', sizes: '256x256', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
