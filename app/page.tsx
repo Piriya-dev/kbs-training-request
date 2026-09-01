@@ -40,7 +40,9 @@ export default function Home() {
     <main className="page-shell">
       <form className="form-card" onSubmit={submitForm}>
         <header className="form-header">
-          <div className="logo-mark" aria-label="KBS Sugar"><span>K</span></div>
+          {/* A relative URL keeps this public asset working under the GitHub Pages repository path. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="logo-mark" src="kbs-sugar-logo.png" alt="KBS Sugar" />
           <div><p className="eyebrow">KBS SUGAR · HUMAN RESOURCES</p><h1>แบบคำร้องขอฝึกอบรม/<wbr />สัมมนา/<wbr />ดูงาน</h1><p>F-HR-302 v.4 Rev. 01.09.25 — ส่วนที่ 1 สำหรับหน่วยงานและผู้ขอรับการฝึกอบรม</p></div>
         </header>
 
