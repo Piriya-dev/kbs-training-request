@@ -13,7 +13,7 @@
 ## 1. เปิด Terminal และเข้าโฟลเดอร์โปรเจกต์
 
 ```bash
-cd "/Users/piriya/Desktop/9 Expert Course/Cafe near me/kbs-training-request"
+cd "/Users/piriya/Desktop/ai101/kbs-training-request"
 ```
 
 ตรวจสอบสถานะ Git:
@@ -143,7 +143,7 @@ Workflow จะทำงานอัตโนมัติเมื่อมี�
 หลังแก้ไขเว็บไซต์ ให้ใช้คำสั่ง:
 
 ```bash
-cd "/Users/piriya/Desktop/9 Expert Course/Cafe near me/kbs-training-request"
+cd "/Users/piriya/Desktop/ai101/kbs-training-request"
 git add .
 git commit -m "Update training request form"
 git push
